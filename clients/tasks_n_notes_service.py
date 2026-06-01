@@ -1,0 +1,2 @@
+class TaskNNoteServiceClient:
+    pass
