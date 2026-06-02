@@ -24,11 +24,13 @@ jobs:
 
       - name: Generate pydantic models
         run: |
-          uvx datamodel-code-generator \
+          uvx --from datamodel-code-generator datamodel-codegen \
             --input schemas/users_service_openapi.json \
             --output schemas/users_service_contracts.py \
-            --input-file-type OpenAPI \
-            --output-model-type pydantic_v2.BaseModel
+            --input-file-type openapi \
+            --output-model-type pydantic_v2.BaseModel \
+            --capitalize-enum-members
+          rm schemas/users_service_openapi.json
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v6
