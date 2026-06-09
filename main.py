@@ -6,7 +6,7 @@ from config import settings
 from routes.private.auth import auth_router
 from middlewares.api_clients import ClientServicesMiddleware
 from routes.private.note import note_router
-
+from routes.private.task import task_router
 
 services_clients_middleware = ClientServicesMiddleware()
 
@@ -16,7 +16,8 @@ async def main():
     dp = Dispatcher()
     dp.include_routers(
         auth_router,
-        note_router
+        note_router,
+        task_router,
     )
     dp.message.middleware(services_clients_middleware)
     dp.callback_query.middleware(services_clients_middleware)

@@ -39,19 +39,20 @@ async def new_task_description(message: Message, state: FSMContext):
 @task_router.message(TaskCreationStates.description_added)
 async def new_task_start_dt(message: Message, state: FSMContext):
     try:
-        input_dt = DatetimeValidator.model_validate({"start_dt": message.text})
+        input_dt = DatetimeValidator.model_validate({"input_dt": message.text})
     except ValidationError as err:
         logger.error(err)
         await message.answer("Please enter datetime in format YYYY-MM-DD HH:MM. For example: '1984-04-20 02:28'")
         return
     await state.update_data({"start_dt": input_dt.input_dt.astimezone(UTC)})
     await state.set_state(TaskCreationStates.start_dt_added)
+    await message.answer("Please enter task end datetime in YYYY-MM-DD HH:MM format")
 
 
 @task_router.message(TaskCreationStates.start_dt_added)
 async def new_task_end_dt(message: Message, state: FSMContext):
     try:
-        input_dt = DatetimeValidator.model_validate({"end_dt": message.text})
+        input_dt = DatetimeValidator.model_validate({"input_dt": message.text})
     except ValidationError as err:
         logger.error(err)
         await message.answer("Please enter datetime in format YYYY-MM-DD HH:MM. For example: '1984-04-20 02:28'")
@@ -61,6 +62,7 @@ async def new_task_end_dt(message: Message, state: FSMContext):
     if end_dt <= start_dt:
         await message.answer("Task should end after it starts, not before. Please enter correct task end datetime")
         return
+    await state.update_data({"end_dt": end_dt})
     kb = InlineKeyboardBuilder()
     kb.add(InlineKeyboardButton(text="Confirm", callback_data="confirm"))
     kb.add(InlineKeyboardButton(text="Cancel", callback_data="cancel"))
@@ -84,7 +86,7 @@ async def new_task_confirm(cb: CallbackQuery, state: FSMContext, services_client
     access_token = await services_clients.user_service_client.get_access_token(cb.from_user.id, cb.from_user.username)
     if not access_token:
         await cb.message.answer("Something went wrong")
-    resp_data = await services_clients.tasks_n_notes_service_client.create_note(access_token, task_create_data)
+    resp_data = await services_clients.tasks_n_notes_service_client.create_task(access_token, task_create_data)
     await cb.message.answer(f"Your task has id: {resp_data.id}")
     await state.clear()
 

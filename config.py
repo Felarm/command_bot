@@ -19,8 +19,10 @@ class Settings(BaseSettings):
 
     TASKS_N_NOTES_SERVICE_URL: str
     GET_ALL_NOTES_ENDPOINT: str = "/notes"
-    CREATE_NOTE_ENDPOINT: str = "/notes/create"
-    DELETE_NOTE_ENDPOINT: str = "/notes/delete/{}"
+    CREATE_NOTE_ENDPOINT: str = "/notes"
+    DELETE_NOTE_ENDPOINT: str = "/notes/{}"
+
+    CREATE_TASK_ENDPOINT: str = "/tasks"
 
     model_config = SettingsConfigDict(env_file=".env")
 
