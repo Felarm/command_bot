@@ -1,18 +1,26 @@
 class BaseAppException(Exception):
-    pass
+    def __init__(self, msg: str, error_from: str = "Unknown"):
+        self.msg = msg
+        self.error_from = error_from
+        super().__init__(self.msg)
 
 
 class UsersClientException(BaseAppException):
-    pass
+    def __init__(self, msg: str):
+        super().__init__(msg=msg, error_from="Users client")
 
 
-class UnauthorizedException(UsersClientException):
-    pass
+class ExpiredTokenException(BaseAppException):
+    def __init__(self, token_type: str, error_from: str):
+        self.token_type = token_type
+        super().__init__(msg="Expired token", error_from=error_from)
 
 
-class ExpiredAccessTokenException(UnauthorizedException):
-    pass
+class TokenDecodeException(BaseAppException):
+    def __init__(self, msg: str):
+        super().__init__(msg, error_from="JWTDecode")
 
 
-class ExpiredRefreshTokenException(UnauthorizedException):
-    pass
+class TasksNNotesClientException(BaseAppException):
+    def __init__(self, msg: str):
+        super().__init__(msg=msg, error_from="Task n Notes client")

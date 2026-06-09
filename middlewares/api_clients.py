@@ -1,12 +1,13 @@
 from typing import Callable, Dict, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
-from clients.base import ApiClients
+from clients.clients import ServicesClients
+
 
 class ClientServicesMiddleware(BaseMiddleware):
-    def __init__(self, clients: ApiClients):
+    def __init__(self):
         super().__init__()
-        self.services_clients = clients
+        self.services_clients = ServicesClients()
 
     async def __call__(
         self,
